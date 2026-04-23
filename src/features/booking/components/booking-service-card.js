@@ -14,34 +14,40 @@ export function BookingServiceCard({ service, isSelected, onSelect }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-lg font-semibold text-white">{service.name}</p>
-          <p className="mt-2 text-sm leading-6 text-white/58">{service.description}</p>
+          <p className="mt-2 text-sm leading-6 text-white/58">
+            {service.description || "Workshop service prepared for booking intake and advisor follow-up."}
+          </p>
         </div>
-        <span
-          className={[
-            "rounded-full px-3 py-1 text-xs font-medium",
-            isSelected
-              ? "bg-slate-950 text-[var(--color-accent-strong)]"
-              : "border border-white/[0.08] text-white/62",
-          ].join(" ")}
-        >
-          {service.duration}
-        </span>
+        {service.duration ? (
+          <span
+            className={[
+              "rounded-full px-3 py-1 text-xs font-medium",
+              isSelected
+                ? "bg-slate-950 text-[var(--color-accent-strong)]"
+                : "border border-white/[0.08] text-white/62",
+            ].join(" ")}
+          >
+            {service.duration}
+          </span>
+        ) : null}
       </div>
 
-      <div className="mt-5 flex flex-wrap gap-2">
-        {service.highlights.map((highlight) => (
-          <span
-            key={highlight}
-            className="rounded-full border border-white/[0.08] px-3 py-1 text-xs font-medium text-white/65"
-          >
-            {highlight}
-          </span>
-        ))}
-      </div>
+      {service.highlights?.length ? (
+        <div className="mt-5 flex flex-wrap gap-2">
+          {service.highlights.map((highlight) => (
+            <span
+              key={highlight}
+              className="rounded-full border border-white/[0.08] px-3 py-1 text-xs font-medium text-white/65"
+            >
+              {highlight}
+            </span>
+          ))}
+        </div>
+      ) : null}
 
       <div className="mt-5 flex items-center justify-between gap-4 text-sm">
-        <span className="text-[var(--color-accent-strong)]">{service.availability}</span>
-        <span className="font-medium text-white/78">{service.price}</span>
+        <span className="text-[var(--color-accent-strong)]">{service.availability || "Available to request"}</span>
+        <span className="font-medium text-white/78">{service.price || "Advisor quote"}</span>
       </div>
     </button>
   );

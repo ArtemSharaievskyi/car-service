@@ -1,7 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useActionState, useMemo, useState } from "react";
+import { createBookingAction } from "@/features/booking/actions";
 import { BookingServiceCard } from "@/features/booking/components/booking-service-card";
+
+const initialBookingState = {
+  status: "idle",
+  message: "",
+  errors: {},
+};
 
 function formatDateLabel(date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -39,14 +46,46 @@ export function BookingForm({ services }) {
   const [selectedDate, setSelectedDate] = useState(dateOptions[1]?.value ?? dateOptions[0]?.value ?? "");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [state, formAction, pending] = useActionState(createBookingAction, initialBookingState);
 
   const activeService =
-    services.find((service) => service.id === selectedService) ?? services[0] ?? null;
+    services.find((service) => String(service.id) === String(selectedService)) ?? services[0] ?? null;
   const activeDate = dateOptions.find((option) => option.value === selectedDate) ?? null;
+  const serviceError = state.errors?.serviceId?.[0];
+  const dateError = state.errors?.bookingDate?.[0];
+  const nameError = state.errors?.name?.[0];
+  const phoneError = state.errors?.phone?.[0];
+
+  if (!services.length) {
+    return (
+      <div className="panel rounded-lg p-6">
+        <p className="text-lg font-semibold text-white">No services available</p>
+        <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
+          The booking form is ready, but the workshop does not have any services stored in the database yet.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid gap-8 xl:grid-cols-[minmax(0,1.25fr)_320px]">
-      <form className="space-y-8">
+      <form action={formAction} className="space-y-8">
+        <input type="hidden" name="serviceId" value={selectedService} />
+        <input type="hidden" name="bookingDate" value={selectedDate} />
+
+        {state.message ? (
+          <div
+            className={[
+              "rounded-lg border px-4 py-3 text-sm",
+              state.status === "success"
+                ? "border-emerald-400/25 bg-emerald-500/10 text-emerald-100"
+                : "border-red-400/25 bg-red-500/10 text-red-100",
+            ].join(" ")}
+          >
+            {state.message}
+          </div>
+        ) : null}
+
         <section className="space-y-4">
           <div className="flex items-end justify-between gap-4">
             <div>
@@ -63,11 +102,12 @@ export function BookingForm({ services }) {
               <BookingServiceCard
                 key={service.id}
                 service={service}
-                isSelected={service.id === selectedService}
-                onSelect={setSelectedService}
+                isSelected={String(service.id) === String(selectedService)}
+                onSelect={(value) => setSelectedService(String(value))}
               />
             ))}
           </div>
+          {serviceError ? <p className="text-sm text-red-300">{serviceError}</p> : null}
         </section>
 
         <section className="space-y-4">
@@ -103,6 +143,7 @@ export function BookingForm({ services }) {
               );
             })}
           </div>
+          {dateError ? <p className="text-sm text-red-300">{dateError}</p> : null}
         </section>
 
         <section className="space-y-4">
@@ -122,8 +163,10 @@ export function BookingForm({ services }) {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Alex Morgan"
+                aria-invalid={Boolean(nameError)}
                 className="h-12 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 text-white outline-none transition placeholder:text-white/28 focus:border-[var(--color-accent)] focus:bg-white/[0.05]"
               />
+              {nameError ? <span className="text-sm text-red-300">{nameError}</span> : null}
             </label>
 
             <label className="space-y-2">
@@ -134,22 +177,24 @@ export function BookingForm({ services }) {
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
                 placeholder="+49 151 2345 6789"
+                aria-invalid={Boolean(phoneError)}
                 className="h-12 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 text-white outline-none transition placeholder:text-white/28 focus:border-[var(--color-accent)] focus:bg-white/[0.05]"
               />
+              {phoneError ? <span className="text-sm text-red-300">{phoneError}</span> : null}
             </label>
           </div>
         </section>
 
         <div className="flex flex-wrap items-center gap-4 border-t border-white/[0.08] pt-6">
           <button
-            type="button"
-            disabled
-            className="rounded-full bg-white/10 px-5 py-3 text-sm font-semibold text-white/55"
+            type="submit"
+            disabled={pending}
+            className="rounded-full bg-[var(--color-accent)] px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[var(--color-accent-strong)] disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/55"
           >
-            Booking submission coming soon
+            {pending ? "Saving booking..." : "Request booking"}
           </button>
           <p className="text-sm text-white/45">
-            Selections stay interactive, but no request is sent yet.
+            The workshop still confirms the final appointment manually.
           </p>
         </div>
       </form>
@@ -163,7 +208,9 @@ export function BookingForm({ services }) {
           <div className="border-b border-white/[0.08] pb-5">
             <p className="text-xs uppercase tracking-[0.18em] text-white/40">Selected service</p>
             <p className="mt-3 text-xl font-semibold text-white">{activeService?.name ?? "Choose service"}</p>
-            <p className="mt-2 text-sm text-white/58">{activeService?.description}</p>
+            <p className="mt-2 text-sm text-white/58">
+              {activeService?.description || "Workshop service prepared for booking intake and advisor follow-up."}
+            </p>
           </div>
 
           <div className="border-b border-white/[0.08] pb-5">
@@ -188,11 +235,11 @@ export function BookingForm({ services }) {
             </div>
             <div className="flex items-center justify-between text-sm text-white/68">
               <span>Starting price</span>
-              <span>{activeService?.price ?? "-"}</span>
+              <span>{activeService?.price ?? "Advisor quote"}</span>
             </div>
             <div className="flex items-center justify-between text-sm text-white/68">
               <span>Availability</span>
-              <span>{activeService?.availability ?? "-"}</span>
+              <span>{activeService?.availability ?? "Available to request"}</span>
             </div>
           </div>
         </div>
