@@ -1,0 +1,49 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { navigationItems } from "@/lib/navigation";
+
+export function SiteHeader() {
+  const pathname = usePathname();
+
+  return (
+    <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-slate-950/85 backdrop-blur-xl">
+      <div className="app-shell flex min-h-18 items-center justify-between gap-6 py-4">
+        <Link href="/" className="flex min-w-0 items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-sm border border-white/10 bg-white/[0.04] text-sm font-semibold text-[var(--color-accent-strong)]">
+            PG
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-white/60">
+              Pitlane Garage
+            </p>
+            <p className="truncate text-base font-semibold text-white">
+              Service + Parts Platform
+            </p>
+          </div>
+        </Link>
+
+        <nav className="flex flex-wrap items-center justify-end gap-2 text-sm font-medium">
+          {navigationItems.map((item) => {
+            const active = pathname === item.href;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`rounded-full px-4 py-2 transition ${
+                  active
+                    ? "bg-[var(--color-accent)] text-slate-950"
+                    : "text-white/70 hover:bg-white/[0.06] hover:text-white"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+    </header>
+  );
+}

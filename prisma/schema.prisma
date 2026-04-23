@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ServiceType {
+  DIAGNOSTICS
+  OIL_CHANGE
+  MAINTENANCE
+}
+
+model Service {
+  id          Int         @id @default(autoincrement())
+  type        ServiceType @unique
+  name        String      @unique
+  description String?
+  bookings    Booking[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Booking {
+  id           Int      @id @default(autoincrement())
+  customerName String
+  phone        String
+  serviceId    Int
+  bookingDate  DateTime
+  service      Service  @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([serviceId])
+  @@index([bookingDate])
+}
+
+model Part {
+  id        Int        @id @default(autoincrement())
+  name      String
+  price     Decimal    @db.Decimal(10, 2)
+  brand     String
+  model     String
+  image     String
+  category  String
+  cartItems CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([category])
+  @@index([brand, model])
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  partId    Int
+  quantity  Int      @default(1)
+  part      Part     @relation(fields: [partId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([partId])
+}
