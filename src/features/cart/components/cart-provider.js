@@ -61,6 +61,10 @@ export function CartProvider({ children }) {
     setItems((currentItems) => currentItems.filter((item) => item.sku !== sku));
   };
 
+  const clearCart = () => {
+    setItems([]);
+  };
+
   const updateQuantity = (sku, quantity) => {
     const nextQuantity = Number.parseInt(quantity, 10);
 
@@ -83,6 +87,7 @@ export function CartProvider({ children }) {
         items,
         addPart,
         removePart,
+        clearCart,
         updateQuantity,
         totalItems,
         totalPrice,

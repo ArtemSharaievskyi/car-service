@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { PageIntro } from "@/components/shared/page-intro";
 import { SectionBlock } from "@/components/shared/section-block";
 import { useCart } from "@/features/cart/components/cart-provider";
@@ -48,6 +49,35 @@ function EmptyCartState() {
       >
         Browse parts
       </Link>
+    </div>
+  );
+}
+
+function CheckoutStatusNotice({ checkoutStatus, errorMessage }) {
+  if (!checkoutStatus && !errorMessage) {
+    return null;
+  }
+
+  if (checkoutStatus === "success") {
+    return (
+      <div className="rounded-lg border border-emerald-400/20 bg-emerald-400/10 px-5 py-4 text-sm text-emerald-100">
+        Stripe confirmed your payment. Your parts cart has been cleared, and you can continue browsing if
+        you need anything else.
+      </div>
+    );
+  }
+
+  if (checkoutStatus === "cancelled") {
+    return (
+      <div className="rounded-lg border border-amber-300/20 bg-amber-300/10 px-5 py-4 text-sm text-amber-100">
+        Checkout was canceled before payment completed. Your cart is still here whenever you are ready.
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border border-rose-300/20 bg-rose-300/10 px-5 py-4 text-sm text-rose-100">
+      {errorMessage}
     </div>
   );
 }
@@ -133,8 +163,49 @@ function CartLineItem({ item, onQuantityChange, onRemove }) {
   );
 }
 
-export function CartPageShell() {
-  const { items, totalItems, totalPrice, updateQuantity, removePart, hasLoaded } = useCart();
+export function CartPageShell({ checkoutStatus }) {
+  const { items, totalItems, totalPrice, updateQuantity, removePart, clearCart, hasLoaded } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+
+  useEffect(() => {
+    if (checkoutStatus === "success" && hasLoaded && items.length > 0) {
+      clearCart();
+    }
+  }, [checkoutStatus, clearCart, hasLoaded, items.length]);
+
+  const handleCheckout = async () => {
+    setCheckoutError("");
+    setIsCheckingOut(true);
+
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            sku: item.sku,
+            quantity: item.quantity,
+          })),
+        }),
+      });
+
+      const payload = await response.json().catch(() => null);
+
+      if (!response.ok || !payload?.url) {
+        throw new Error(payload?.error || "Unable to start Stripe Checkout.");
+      }
+
+      window.location.assign(payload.url);
+    } catch (error) {
+      setCheckoutError(
+        error instanceof Error ? error.message : "Unable to start Stripe Checkout right now."
+      );
+      setIsCheckingOut(false);
+    }
+  };
 
   return (
     <>
@@ -157,6 +228,12 @@ export function CartPageShell() {
         title="Cart Items"
         description="Quantities update instantly and the subtotal recalculates from the parts currently selected."
       >
+        {(checkoutStatus || checkoutError) && (
+          <div className="mb-4">
+          <CheckoutStatusNotice checkoutStatus={checkoutStatus} errorMessage={checkoutError} />
+          </div>
+        )}
+
         {hasLoaded && items.length === 0 ? (
           <EmptyCartState />
         ) : (
@@ -199,6 +276,18 @@ export function CartPageShell() {
                   <p className="mt-3 text-sm leading-6 text-white/58">
                     Labour, taxes, and final workshop pricing are not included here. This view only tracks
                     selected parts and their quantities.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleCheckout}
+                    disabled={!hasLoaded || items.length === 0 || isCheckingOut}
+                    className="mt-5 inline-flex min-h-11 w-full items-center justify-center rounded-full bg-[var(--color-accent)] px-5 text-sm font-semibold text-slate-950 transition hover:bg-[var(--color-accent-strong)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {isCheckingOut ? "Redirecting to Stripe..." : "Checkout with Stripe"}
+                  </button>
+                  <p className="mt-3 text-xs leading-5 text-white/45">
+                    You&apos;ll be redirected to Stripe&apos;s hosted checkout to pay securely for the parts in
+                    your cart.
                   </p>
                 </div>
               </div>
