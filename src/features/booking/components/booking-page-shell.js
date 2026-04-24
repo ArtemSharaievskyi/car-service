@@ -48,21 +48,35 @@ const workshopNotes = [
   "Bookings can also be cancelled before the visit is finished if plans change.",
 ];
 
-async function getBookingServices() {
-  const services = await db.service.findMany({
-    orderBy: { name: "asc" },
-    select: {
-      id: true,
-      name: true,
-      description: true,
-      type: true,
-    },
-  });
+function getErrorMessage(error) {
+  if (error instanceof Error) {
+    return error.message || error.code || "Unknown database error";
+  }
 
-  return services.map((service) => ({
-    ...service,
-    ...servicePresentation[service.type],
-  }));
+  return "Unknown database error";
+}
+
+async function getBookingServices() {
+  try {
+    const services = await db.service.findMany({
+      orderBy: { name: "asc" },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        type: true,
+      },
+    });
+
+    return services.map((service) => ({
+      ...service,
+      ...servicePresentation[service.type],
+    }));
+  } catch (error) {
+    console.warn(`Booking services unavailable: ${getErrorMessage(error)}`);
+
+    return [];
+  }
 }
 
 export async function BookingPageShell() {

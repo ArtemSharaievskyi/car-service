@@ -35,74 +35,100 @@ function logEmailFailure(scope, recipient, error) {
   });
 }
 
-function buildBusinessEmail({ customerName, customerEmail, phone, serviceName, bookingDate }) {
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function buildSummaryRow(label, value) {
+  return `
+    <tr>
+      <td style="padding: 15px 0; color: #96a3b3; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">${label}</td>
+      <td style="padding: 15px 0 15px 18px; color: #f5f7fa; font-size: 15px; font-weight: 700; line-height: 1.45; text-align: right; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">${value}</td>
+    </tr>
+  `;
+}
+
+function buildBusinessEmail({ customerName, phone, serviceName, bookingDate }) {
   const dateLabel = formatBookingDate(bookingDate);
   const timeLabel = formatBookingTime(bookingDate);
-  const subject = `New booking request: ${serviceName}`;
+  const safeCustomerName = escapeHtml(customerName);
+  const safePhone = escapeHtml(phone);
+  const safeServiceName = escapeHtml(serviceName);
+  const safeDateLabel = escapeHtml(dateLabel);
+  const safeTimeLabel = escapeHtml(timeLabel);
+  const safeBrandName = escapeHtml(brand.name);
+  const safeBrandInitials = escapeHtml(brand.initials);
+  const safeTagline = escapeHtml(brand.tagline);
+  const subject = `New Service Booking: ${serviceName}`;
 
   return {
     subject,
     text: [
-      `New booking request for ${brand.name}`,
+      "New Service Booking",
+      brand.name,
       "",
       `Customer: ${customerName}`,
-      `Email: ${customerEmail}`,
       `Phone: ${phone}`,
       `Service: ${serviceName}`,
       `Date: ${dateLabel}`,
       `Time: ${timeLabel}`,
     ].join("\n"),
     html: `
-      <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
-        <h2 style="margin-bottom: 16px;">New booking request</h2>
-        <p style="margin: 0 0 12px;">A new booking was submitted on the ${brand.name} website.</p>
-        <table style="border-collapse: collapse;">
-          <tr><td style="padding: 6px 12px 6px 0; font-weight: 700;">Customer</td><td style="padding: 6px 0;">${customerName}</td></tr>
-          <tr><td style="padding: 6px 12px 6px 0; font-weight: 700;">Email</td><td style="padding: 6px 0;">${customerEmail}</td></tr>
-          <tr><td style="padding: 6px 12px 6px 0; font-weight: 700;">Phone</td><td style="padding: 6px 0;">${phone}</td></tr>
-          <tr><td style="padding: 6px 12px 6px 0; font-weight: 700;">Service</td><td style="padding: 6px 0;">${serviceName}</td></tr>
-          <tr><td style="padding: 6px 12px 6px 0; font-weight: 700;">Date</td><td style="padding: 6px 0;">${dateLabel}</td></tr>
-          <tr><td style="padding: 6px 12px 6px 0; font-weight: 700;">Time</td><td style="padding: 6px 0;">${timeLabel}</td></tr>
+      <div style="margin: 0; padding: 0; background: #04070b;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; background: #04070b;">
+          <tr>
+            <td align="center" style="padding: 34px 16px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width: 100%; max-width: 560px; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 0 0 18px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse;">
+                      <tr>
+                        <td width="54" style="width: 54px;">
+                          <div style="width: 46px; height: 46px; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 8px; background: #0d141c; color: #9ccfff; font-family: Arial, Helvetica, sans-serif; font-size: 14px; font-weight: 800; line-height: 46px; text-align: center;">${safeBrandInitials}</div>
+                        </td>
+                        <td style="font-family: Arial, Helvetica, sans-serif;">
+                          <div style="color: rgba(245, 247, 250, 0.68); font-size: 12px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;">${safeBrandName}</div>
+                          <div style="margin-top: 5px; color: #f5f7fa; font-size: 16px; font-weight: 800; line-height: 1.35;">${safeTagline}</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="background: #0d141c; background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(77, 163, 255, 0.045)); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.34); overflow: hidden;">
+                    <div style="height: 4px; background: #4da3ff; line-height: 4px;">&nbsp;</div>
+                    <div style="padding: 30px 30px 10px; font-family: Arial, Helvetica, sans-serif;">
+                      <div style="display: inline-block; margin: 0 0 14px; padding: 7px 12px; border: 1px solid rgba(77, 163, 255, 0.3); border-radius: 999px; background: rgba(77, 163, 255, 0.18); color: #9ccfff; font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase;">Booking Notification</div>
+                      <h1 style="margin: 0; color: #f5f7fa; font-size: 28px; line-height: 1.2; font-weight: 800;">New Service Booking</h1>
+                      <p style="margin: 13px 0 0; color: #96a3b3; font-size: 15px; line-height: 1.7;">A customer submitted a new service request. Review the details below and follow up to confirm the appointment.</p>
+                    </div>
+                    <div style="padding: 16px 30px 30px;">
+                      <div style="margin: 0 0 12px; color: #9ccfff; font-family: Arial, Helvetica, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;">Booking Summary</div>
+                      <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif;">
+                        ${buildSummaryRow("Customer", safeCustomerName)}
+                        ${buildSummaryRow("Phone", safePhone)}
+                        ${buildSummaryRow("Service", safeServiceName)}
+                        ${buildSummaryRow("Date", safeDateLabel)}
+                        ${buildSummaryRow("Time", safeTimeLabel)}
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding: 18px 12px 0; font-family: Arial, Helvetica, sans-serif; color: #96a3b3; font-size: 12px; line-height: 1.6;">
+                    <span style="color: #f5f7fa; font-weight: 700;">${safeBrandName}</span><br />
+                    Professional car service booking notification
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
         </table>
-      </div>
-    `,
-  };
-}
-
-function buildCustomerEmail({ customerName, phone, serviceName, bookingDate }) {
-  const dateLabel = formatBookingDate(bookingDate);
-  const timeLabel = formatBookingTime(bookingDate);
-
-  return {
-    subject: `${brand.shortName} booking request received`,
-    text: [
-      `Hello ${customerName},`,
-      "",
-      `Thank you for booking with ${brand.name}. Your service request has been received.`,
-      "",
-      `Service: ${serviceName}`,
-      `Preferred date: ${dateLabel}`,
-      `Preferred time: ${timeLabel}`,
-      `Phone: ${phone}`,
-      "",
-      "A service advisor will review the request and confirm the final appointment details with you directly.",
-      "",
-      `Regards,`,
-      brand.name,
-    ].join("\n"),
-    html: `
-      <div style="font-family: Arial, sans-serif; color: #111827; line-height: 1.6;">
-        <p style="margin: 0 0 12px;">Hello ${customerName},</p>
-        <p style="margin: 0 0 16px;">Thank you for choosing ${brand.name}. Your booking request has been received and is now awaiting workshop confirmation.</p>
-        <div style="border: 1px solid #d1d5db; border-radius: 12px; padding: 16px; margin: 0 0 16px;">
-          <p style="margin: 0 0 8px; font-weight: 700;">Booking summary</p>
-          <p style="margin: 0 0 4px;"><strong>Service:</strong> ${serviceName}</p>
-          <p style="margin: 0 0 4px;"><strong>Date:</strong> ${dateLabel}</p>
-          <p style="margin: 0 0 4px;"><strong>Time:</strong> ${timeLabel}</p>
-          <p style="margin: 0;"><strong>Phone:</strong> ${phone}</p>
-        </div>
-        <p style="margin: 0 0 12px;">A service advisor will review the request and confirm the final appointment details with you directly.</p>
-        <p style="margin: 0;">Regards,<br />${brand.name}</p>
       </div>
     `,
   };
@@ -121,7 +147,7 @@ export async function sendBookingNotifications(bookingDetails) {
   const resend = new Resend(config.apiKey);
   const businessEmail = buildBusinessEmail(bookingDetails);
   let businessNotificationSent = false;
-  let customerNotificationSent = false;
+  const customerNotificationSent = false;
 
   try {
     const businessResult = await resend.emails.send({
@@ -139,28 +165,6 @@ export async function sendBookingNotifications(bookingDetails) {
     businessNotificationSent = true;
   } catch (error) {
     logEmailFailure("business-booking-notification", businessBookingEmail, error);
-  }
-
-  if (bookingDetails.customerEmail) {
-    const customerEmail = buildCustomerEmail(bookingDetails);
-
-    try {
-      const customerResult = await resend.emails.send({
-        from: config.from,
-        to: [bookingDetails.customerEmail],
-        subject: customerEmail.subject,
-        text: customerEmail.text,
-        html: customerEmail.html,
-      });
-
-      if (customerResult.error) {
-        throw new Error(customerResult.error.message);
-      }
-
-      customerNotificationSent = true;
-    } catch (error) {
-      logEmailFailure("customer-booking-confirmation", bookingDetails.customerEmail, error);
-    }
   }
 
   return {
