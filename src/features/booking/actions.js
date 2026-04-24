@@ -12,6 +12,7 @@ export async function createBookingAction(_previousState, formData) {
     bookingDate: formData.get("bookingDate"),
     bookingTime: formData.get("bookingTime"),
     name: formData.get("name"),
+    email: formData.get("email"),
     phone: formData.get("phone"),
   });
 
@@ -21,7 +22,8 @@ export async function createBookingAction(_previousState, formData) {
       message: "Please check the highlighted fields and try again.",
       errors: parsed.error.flatten().fieldErrors,
       booking: null,
-      emailNotificationSent: false,
+      businessNotificationSent: false,
+      customerNotificationSent: false,
     };
   }
 
@@ -37,7 +39,8 @@ export async function createBookingAction(_previousState, formData) {
         message: "The selected service is no longer available.",
         errors: { serviceId: ["Please choose an available service."] },
         booking: null,
-        emailNotificationSent: false,
+        businessNotificationSent: false,
+        customerNotificationSent: false,
       };
     }
 
@@ -62,31 +65,44 @@ export async function createBookingAction(_previousState, formData) {
       },
     });
 
-    let emailNotificationSent = false;
+    let businessNotificationSent = false;
+    let customerNotificationSent = false;
 
     try {
       const emailResult = await sendBookingNotifications({
         customerName: booking.customerName,
+        customerEmail: parsed.data.email,
         phone: booking.phone,
         serviceName: booking.service.name,
         bookingDate: booking.bookingDate,
       });
 
-      emailNotificationSent = emailResult.businessNotificationSent;
+      businessNotificationSent = emailResult.businessNotificationSent;
+      customerNotificationSent = emailResult.customerNotificationSent;
     } catch (error) {
-      console.error("Failed to send booking email notifications", error);
+      console.error("Booking email flow failed unexpectedly", {
+        scope: "booking-email-flow",
+        message: error instanceof Error ? error.message : "Unknown email failure",
+      });
     }
 
     revalidatePath("/booking");
 
     return {
       status: "success",
-      message: emailNotificationSent
-        ? "Booking request received. The workshop has been notified by email and will confirm your appointment shortly."
-        : "Booking request received. The workshop will confirm your appointment shortly.",
+      message:
+        businessNotificationSent && customerNotificationSent
+          ? "Booking request received. The workshop has been notified and a confirmation email has been sent to you."
+          : businessNotificationSent
+            ? "Booking request received. The workshop has been notified and will confirm your appointment shortly."
+            : "Booking request received. The workshop will confirm your appointment shortly.",
       errors: {},
-      booking: getBookingSummary(booking),
-      emailNotificationSent,
+      booking: getBookingSummary({
+        ...booking,
+        email: parsed.data.email,
+      }),
+      businessNotificationSent,
+      customerNotificationSent,
     };
   } catch (error) {
     console.error("Failed to create booking", error);
@@ -96,7 +112,8 @@ export async function createBookingAction(_previousState, formData) {
       message: "Something went wrong while saving the booking. Please try again.",
       errors: {},
       booking: null,
-      emailNotificationSent: false,
+      businessNotificationSent: false,
+      customerNotificationSent: false,
     };
   }
 }

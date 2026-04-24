@@ -24,6 +24,11 @@ export const bookingRequestSchema = z.object({
     .trim()
     .min(2, "Name must be at least 2 characters.")
     .max(80, "Name must be 80 characters or fewer."),
+  email: z
+    .string()
+    .trim()
+    .email("Enter a valid email address.")
+    .max(120, "Email must be 120 characters or fewer."),
   phone: z
     .string()
     .trim()

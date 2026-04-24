@@ -73,7 +73,7 @@ export async function BookingPageShell() {
       <PageIntro
         eyebrow="Service Booking"
         title="Book trusted workshop service for your vehicle."
-        description="Choose the service you need, select a preferred day and time, and leave your contact details. DriveFix Auto Service will review the request and confirm the appointment with you directly."
+        description="Choose the service you need, select a preferred day and time, and leave your contact details. DriveFix Auto Service will review the request, notify the workshop team, and send a confirmation email to you."
         aside={
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
@@ -105,7 +105,7 @@ export async function BookingPageShell() {
 
       <SectionBlock
         title="Request an Appointment"
-        description="Send your preferred service date, time, and callback details. The form validates your information on the server and stores each booking request securely."
+        description="Send your preferred service date, time, and callback details. The form validates your information on the server, stores the booking securely, and triggers email confirmations without exposing bookings publicly."
       >
         <BookingForm services={services} />
       </SectionBlock>

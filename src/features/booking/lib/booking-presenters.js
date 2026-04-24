@@ -9,6 +9,7 @@ export function getBookingSummary(booking) {
     bookingDateLabel: formatBookingDate(booking.bookingDate),
     bookingTimeLabel: formatBookingTime(booking.bookingDate),
     customerName: booking.customerName,
+    email: booking.email ?? "",
     phone: booking.phone,
     status: booking.status,
     statusLabel: getBookingStatusLabel(booking.status),
