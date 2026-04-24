@@ -10,8 +10,8 @@ export function ShopPageShell() {
     <>
       <PageIntro
         eyebrow="Parts Shop"
-        title="Real workshop essentials, arranged like a proper parts counter."
-        description="Browse realistic service parts across oils, filters, brakes, ignition, lighting, electrical, and routine wear items. The catalog is now structured by product shelf, with fitment-aware browsing for brand, model, and category."
+        title="Workshop parts and service essentials in one place."
+        description="Browse commonly stocked oils, filters, brakes, ignition parts, lighting, and workshop consumables selected for routine maintenance and repair jobs."
         aside={
           <div className="space-y-5">
             <div>
@@ -43,7 +43,7 @@ export function ShopPageShell() {
 
       <SectionBlock
         title="Shop Shelves"
-        description="Products are grouped by category first, then narrowed by fitment so the storefront stays easy to scan."
+        description="Products are grouped by category first, then narrowed by fitment so drivers can quickly find the right service parts."
       >
         <ShopCatalog products={shopProducts} categories={partCategories} />
       </SectionBlock>

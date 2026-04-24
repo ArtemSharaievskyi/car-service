@@ -43,9 +43,9 @@ const serviceWindows = [
 ];
 
 const workshopNotes = [
-  "Service advisor confirmation happens after you choose a preferred date.",
-  "Bookings are stored immediately after server-side validation passes.",
-  "Complex slot allocation is intentionally out of scope for this flow.",
+  "A service advisor reviews each request and confirms the final appointment by phone.",
+  "Booking requests are saved as soon as your details pass validation.",
+  "If extra inspection time is needed, the team will contact you before the visit.",
 ];
 
 async function getBookingServices() {
@@ -72,12 +72,12 @@ export async function BookingPageShell() {
     <>
       <PageIntro
         eyebrow="Service Booking"
-        title="Book workshop time around the service your car actually needs."
-        description="Choose a service, pick a preferred visit date, and leave the contact details the team needs for a callback. Requests are validated and stored right away, while advisor confirmation still happens afterwards."
+        title="Book trusted workshop service for your vehicle."
+        description="Choose the service you need, select a preferred day, and leave your contact details. DriveFix Auto Service will review the request and confirm the appointment with you directly."
         aside={
           <div className="space-y-4">
             <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
-              Available now
+              This week
             </p>
             {services.length ? (
               services.slice(0, 3).map((service) => (
@@ -96,7 +96,7 @@ export async function BookingPageShell() {
               ))
             ) : (
               <p className="text-sm leading-6 text-white/60">
-                No services are configured in the database yet. Add workshop services before taking bookings.
+                No services are available right now. Please add workshop services before accepting bookings.
               </p>
             )}
           </div>
@@ -104,15 +104,15 @@ export async function BookingPageShell() {
       />
 
       <SectionBlock
-        title="Schedule Request"
-        description="Build a service request with a preferred date and callback details. The form validates on the server and saves clean booking records to the database."
+        title="Request an Appointment"
+        description="Send your preferred service date and callback details. The form validates your information on the server and stores each booking request securely."
       >
         <BookingForm services={services} />
       </SectionBlock>
 
       <SectionBlock
         title="Workshop Hours"
-        description="Typical intake windows for service visits. Final slot confirmation still happens with the service team."
+        description="Typical vehicle intake windows for service visits. Final timing is always confirmed by the workshop team."
       >
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid gap-4 md:grid-cols-3">

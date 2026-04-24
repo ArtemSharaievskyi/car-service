@@ -29,7 +29,7 @@ function CartSummaryCard() {
         </div>
       ))}
       <p className="text-sm leading-6 text-white/58">
-        This cart stays entirely on the client. There is no payment flow or checkout handoff attached yet.
+        Review the parts you have selected before contacting the workshop or continuing your order.
       </p>
     </div>
   );
@@ -40,7 +40,7 @@ function EmptyCartState() {
     <div className="panel rounded-lg p-6">
       <p className="text-lg font-semibold text-white">Your cart is empty.</p>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-white/58">
-        Add parts from the shop to build a parts order, then come back here to review quantities and subtotal.
+        Add service parts from the shop, then return here to review quantities and your current subtotal.
       </p>
       <Link
         href="/shop"
@@ -140,8 +140,8 @@ export function CartPageShell() {
     <>
       <PageIntro
         eyebrow="Cart"
-        title="Review parts, adjust quantities, and keep the order clean before checkout exists."
-        description="This route is a simple client-side cart for the parts shop. You can add items, remove them, change quantities, and verify the running subtotal without involving any payment system."
+        title="Review your selected parts before finalizing service needs."
+        description="Adjust quantities, remove items, and check your subtotal before discussing the order with the workshop."
         actions={
           <Link
             href="/shop"
@@ -155,7 +155,7 @@ export function CartPageShell() {
 
       <SectionBlock
         title="Cart Items"
-        description="Quantities update instantly on the client and the subtotal recalculates from the selected parts only."
+        description="Quantities update instantly and the subtotal recalculates from the parts currently selected."
       >
         {hasLoaded && items.length === 0 ? (
           <EmptyCartState />
@@ -197,8 +197,8 @@ export function CartPageShell() {
                     <span className="text-2xl font-semibold text-white">{formatPrice(totalPrice)}</span>
                   </div>
                   <p className="mt-3 text-sm leading-6 text-white/58">
-                    No payment, shipping, or workshop labor is included here. This page only tracks selected
-                    parts and their quantities.
+                    Labour, taxes, and final workshop pricing are not included here. This view only tracks
+                    selected parts and their quantities.
                   </p>
                 </div>
               </div>

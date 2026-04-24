@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCart } from "@/features/cart/components/cart-provider";
+import { brand } from "@/lib/brand";
 import { navigationItems } from "@/lib/navigation";
 
 export function SiteHeader() {
@@ -13,15 +14,16 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-slate-950/85 backdrop-blur-xl">
       <div className="app-shell flex min-h-18 items-center justify-between gap-6 py-4">
         <Link href="/" className="flex min-w-0 items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-sm border border-white/10 bg-white/[0.04] text-sm font-semibold text-[var(--color-accent-strong)]">
-            PG
+          <div className="relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-sm border border-white/10 bg-white/[0.04] text-sm font-semibold text-[var(--color-accent-strong)]">
+            <span className="absolute inset-y-2 left-2 w-1 rounded-full bg-[var(--color-accent)]/80" />
+            <span className="relative">{brand.initials}</span>
           </div>
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold uppercase tracking-[0.18em] text-white/60">
-              Pitlane Garage
+              {brand.name}
             </p>
             <p className="truncate text-base font-semibold text-white">
-              Service + Parts Platform
+              {brand.tagline}
             </p>
           </div>
         </Link>

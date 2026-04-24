@@ -1,17 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SectionBlock } from "@/components/shared/section-block";
+import { brand } from "@/lib/brand";
 
 const serviceSignals = [
-  { value: "Workshop", label: "Service-driven homepage hero" },
-  { value: "Parts", label: "Storefront-ready catalog foundation" },
-  { value: "Responsive", label: "Built for mobile and desktop" },
+  { value: "Diagnostics", label: "Accurate fault finding and warning-light checks" },
+  { value: "Oil Service", label: "Quality oil, filters, and service interval resets" },
+  { value: "Maintenance", label: "Routine servicing to keep your car road-ready" },
 ];
 
 const detailRows = [
-  "Full-bleed black BMW hero inside a premium garage scene",
-  "Animated overlays, subtle parallax drift, and cool-toned accent motion",
-  "Shared shell kept intact across booking, shop, and cart routes",
+  "Modern diagnostics for engine, battery, and electronic systems",
+  "Scheduled maintenance including oil, filters, fluids, and inspection work",
+  "Straightforward booking and a parts catalog for common service items",
 ];
 
 export function HomeOverview() {
@@ -37,14 +38,13 @@ export function HomeOverview() {
 
         <div className="app-shell relative grid min-h-[calc(100svh-73px)] items-end py-10 sm:py-14 lg:grid-cols-[minmax(0,1.15fr)_360px] lg:gap-10 lg:py-16">
           <div className="max-w-3xl self-center py-16 sm:py-20 lg:py-24">
-            <p className="eyebrow">Pitlane Garage</p>
+            <p className="eyebrow">{brand.shortName}</p>
             <h1 className="mt-5 max-w-4xl text-[clamp(3rem,8vw,7rem)] font-semibold leading-[0.92] text-white">
-              Black BMW energy, premium workshop atmosphere.
+              Professional Car Service & Maintenance
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
-              The homepage now leads with a black BMW inside a polished service bay, backed by a colder
-              graphite-and-ice-blue palette that fits the automotive tone much better than the old warm
-              accent system.
+              {brand.name} provides dependable workshop care for everyday vehicles, from diagnostics and
+              oil changes to scheduled maintenance and replacement parts support.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -74,7 +74,7 @@ export function HomeOverview() {
 
           <aside className="relative self-end pb-4 lg:pb-10">
             <div className="hero-float-delayed panel rounded-lg p-6 shadow-2xl shadow-black/30">
-              <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Scene update</p>
+              <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Key services</p>
               <div className="mt-5 grid gap-4">
                 {detailRows.map((row, index) => (
                   <div
@@ -94,26 +94,26 @@ export function HomeOverview() {
       </section>
 
       <SectionBlock
-        title="First impression"
-        description="The homepage now behaves more like a brand-defining automotive front door than a generic app intro."
+        title="Workshop Services"
+        description="Clear service information for drivers who need professional maintenance, fast diagnostics, and practical repair support."
       >
         <div className="grid gap-4 md:grid-cols-3">
           <div className="panel rounded-lg p-5">
-            <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Hero image</p>
+            <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Diagnostics</p>
             <p className="mt-3 text-sm leading-6 text-white/60">
-              Large full-bleed garage scene with a black BMW as the first-viewport anchor.
+              Computer-based fault checks, warning-light scans, and troubleshooting for drivability issues.
             </p>
           </div>
           <div className="panel rounded-lg p-5">
-            <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Motion</p>
+            <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Oil Change</p>
             <p className="mt-3 text-sm leading-6 text-white/60">
-              Slow image drift, floating panels, and scanning accent lines add energy without getting noisy.
+              Engine oil and filter replacement using quality parts, with service reset where required.
             </p>
           </div>
           <div className="panel rounded-lg p-5">
-            <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Layout</p>
+            <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">Maintenance</p>
             <p className="mt-3 text-sm leading-6 text-white/60">
-              Text stays readable on top of the image while the route structure remains unchanged.
+              Routine inspections, fluid checks, and service work designed to keep vehicles reliable year-round.
             </p>
           </div>
         </div>

@@ -61,7 +61,7 @@ export function BookingForm({ services }) {
       <div className="panel rounded-lg p-6">
         <p className="text-lg font-semibold text-white">No services available</p>
         <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
-          The booking form is ready, but the workshop does not have any services stored in the database yet.
+          The booking form is ready, but no workshop services are currently available in the database.
         </p>
       </div>
     );
@@ -92,9 +92,9 @@ export function BookingForm({ services }) {
               <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
                 Service
               </p>
-              <h3 className="mt-3 text-2xl font-semibold text-white">Available services</h3>
+              <h3 className="mt-3 text-2xl font-semibold text-white">Select a service</h3>
             </div>
-            <p className="text-sm text-white/45">Select one request type</p>
+            <p className="text-sm text-white/45">Choose the work you want booked in</p>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2">
@@ -115,7 +115,7 @@ export function BookingForm({ services }) {
             <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
               Preferred date
             </p>
-            <h3 className="mt-3 text-2xl font-semibold text-white">Choose a workshop day</h3>
+            <h3 className="mt-3 text-2xl font-semibold text-white">Choose your preferred day</h3>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -162,7 +162,7 @@ export function BookingForm({ services }) {
                 name="name"
                 value={name}
                 onChange={(event) => setName(event.target.value)}
-                placeholder="Alex Morgan"
+                placeholder="Daniel Weber"
                 aria-invalid={Boolean(nameError)}
                 className="h-12 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 text-white outline-none transition placeholder:text-white/28 focus:border-[var(--color-accent)] focus:bg-white/[0.05]"
               />
@@ -176,7 +176,7 @@ export function BookingForm({ services }) {
                 name="phone"
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
-                placeholder="+49 151 2345 6789"
+                placeholder="+49 171 2345 678"
                 aria-invalid={Boolean(phoneError)}
                 className="h-12 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 text-white outline-none transition placeholder:text-white/28 focus:border-[var(--color-accent)] focus:bg-white/[0.05]"
               />
@@ -191,10 +191,10 @@ export function BookingForm({ services }) {
             disabled={pending}
             className="rounded-full bg-[var(--color-accent)] px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-[var(--color-accent-strong)] disabled:cursor-not-allowed disabled:bg-white/10 disabled:text-white/55"
           >
-            {pending ? "Saving booking..." : "Request booking"}
+            {pending ? "Saving request..." : "Book service"}
           </button>
           <p className="text-sm text-white/45">
-            The workshop still confirms the final appointment manually.
+            Final appointment confirmation is provided by the service team.
           </p>
         </div>
       </form>
@@ -209,14 +209,14 @@ export function BookingForm({ services }) {
             <p className="text-xs uppercase tracking-[0.18em] text-white/40">Selected service</p>
             <p className="mt-3 text-xl font-semibold text-white">{activeService?.name ?? "Choose service"}</p>
             <p className="mt-2 text-sm text-white/58">
-              {activeService?.description || "Workshop service prepared for booking intake and advisor follow-up."}
+              {activeService?.description || "Professional workshop service prepared for booking intake and advisor follow-up."}
             </p>
           </div>
 
           <div className="border-b border-white/[0.08] pb-5">
             <p className="text-xs uppercase tracking-[0.18em] text-white/40">Preferred date</p>
             <p className="mt-3 text-lg font-semibold text-white">{activeDate?.label ?? "Pick a date"}</p>
-            <p className="mt-2 text-sm text-white/58">Final confirmation happens after advisor review.</p>
+            <p className="mt-2 text-sm text-white/58">A service advisor will confirm the final appointment time.</p>
           </div>
 
           <div className="border-b border-white/[0.08] pb-5">
