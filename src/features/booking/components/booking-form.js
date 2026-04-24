@@ -1,13 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useMemo, useState } from "react";
 import { createBookingAction } from "@/features/booking/actions";
 import { BookingServiceCard } from "@/features/booking/components/booking-service-card";
+import { getBookingStatusClasses } from "@/features/booking/lib/booking-status";
 
 const initialBookingState = {
   status: "idle",
   message: "",
   errors: {},
+  booking: null,
 };
 
 function formatDateLabel(date) {
@@ -83,6 +86,56 @@ export function BookingForm({ services }) {
             ].join(" ")}
           >
             {state.message}
+          </div>
+        ) : null}
+
+        {state.status === "success" && state.booking ? (
+          <div className="panel rounded-lg border border-white/[0.08] p-5">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
+                  Booking summary
+                </p>
+                <h3 className="mt-3 text-xl font-semibold text-white">
+                  {state.booking.serviceName}
+                </h3>
+              </div>
+              <span
+                className={`rounded-full border px-3 py-1 text-xs font-semibold ${getBookingStatusClasses(
+                  state.booking.status
+                )}`}
+              >
+                {state.booking.statusLabel}
+              </span>
+            </div>
+
+            <div className="mt-5 grid gap-4 md:grid-cols-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/40">Date</p>
+                <p className="mt-2 text-sm font-medium text-white">{state.booking.bookingDateLabel}</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/40">Customer</p>
+                <p className="mt-2 text-sm font-medium text-white">{state.booking.customerName}</p>
+                <p className="mt-1 text-sm text-white/58">{state.booking.phone}</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/40">Next step</p>
+                <p className="mt-2 text-sm text-white/68">
+                  The workshop can confirm, start, complete, or cancel this booking from the bookings page.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <Link
+                href="/bookings"
+                className="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.05]"
+              >
+                View all bookings
+              </Link>
+              <p className="text-sm text-white/45">The form stays available if you need to submit another request.</p>
+            </div>
           </div>
         ) : null}
 

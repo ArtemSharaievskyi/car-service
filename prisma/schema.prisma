@@ -12,6 +12,14 @@ enum ServiceType {
   MAINTENANCE
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
 model Service {
   id          Int         @id @default(autoincrement())
   type        ServiceType @unique
@@ -28,12 +36,14 @@ model Booking {
   phone        String
   serviceId    Int
   bookingDate  DateTime
-  service      Service  @relation(fields: [serviceId], references: [id], onDelete: Restrict)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  status       BookingStatus @default(PENDING)
+  service      Service       @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@index([serviceId])
   @@index([bookingDate])
+  @@index([status])
 }
 
 model Part {

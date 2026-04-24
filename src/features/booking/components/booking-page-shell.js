@@ -43,9 +43,9 @@ const serviceWindows = [
 ];
 
 const workshopNotes = [
-  "A service advisor reviews each request and confirms the final appointment by phone.",
-  "Booking requests are saved as soon as your details pass validation.",
-  "If extra inspection time is needed, the team will contact you before the visit.",
+  "Every new booking starts in Pending once the request is saved.",
+  "The workshop team can move a booking through Confirmed, In Progress, and Completed.",
+  "Bookings can also be cancelled before the visit is finished if plans change.",
 ];
 
 async function getBookingServices() {
