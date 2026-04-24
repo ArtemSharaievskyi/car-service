@@ -1,21 +1,16 @@
 "use server";
 
-import { refresh, revalidatePath } from "next/cache";
-import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
+import { sendBookingNotifications } from "@/lib/email";
 import { bookingRequestSchema, normalizeBookingDate } from "@/lib/validations/booking";
 import { getBookingSummary } from "@/features/booking/lib/booking-presenters";
-import { canUpdateBookingStatus, isFinalBookingStatus, isBookingStatus } from "@/features/booking/lib/booking-status";
-
-const bookingStatusUpdateSchema = z.object({
-  bookingId: z.coerce.number().int().positive("Booking not found."),
-  status: z.string().refine(isBookingStatus, "Choose a valid booking status."),
-});
 
 export async function createBookingAction(_previousState, formData) {
   const parsed = bookingRequestSchema.safeParse({
     serviceId: formData.get("serviceId"),
     bookingDate: formData.get("bookingDate"),
+    bookingTime: formData.get("bookingTime"),
     name: formData.get("name"),
     phone: formData.get("phone"),
   });
@@ -26,13 +21,14 @@ export async function createBookingAction(_previousState, formData) {
       message: "Please check the highlighted fields and try again.",
       errors: parsed.error.flatten().fieldErrors,
       booking: null,
+      emailNotificationSent: false,
     };
   }
 
   try {
     const service = await db.service.findUnique({
       where: { id: parsed.data.serviceId },
-      select: { id: true },
+      select: { id: true, name: true },
     });
 
     if (!service) {
@@ -41,6 +37,7 @@ export async function createBookingAction(_previousState, formData) {
         message: "The selected service is no longer available.",
         errors: { serviceId: ["Please choose an available service."] },
         booking: null,
+        emailNotificationSent: false,
       };
     }
 
@@ -49,7 +46,7 @@ export async function createBookingAction(_previousState, formData) {
         customerName: parsed.data.name,
         phone: parsed.data.phone,
         serviceId: parsed.data.serviceId,
-        bookingDate: normalizeBookingDate(parsed.data.bookingDate),
+        bookingDate: normalizeBookingDate(parsed.data.bookingDate, parsed.data.bookingTime),
       },
       select: {
         id: true,
@@ -65,14 +62,31 @@ export async function createBookingAction(_previousState, formData) {
       },
     });
 
+    let emailNotificationSent = false;
+
+    try {
+      const emailResult = await sendBookingNotifications({
+        customerName: booking.customerName,
+        phone: booking.phone,
+        serviceName: booking.service.name,
+        bookingDate: booking.bookingDate,
+      });
+
+      emailNotificationSent = emailResult.businessNotificationSent;
+    } catch (error) {
+      console.error("Failed to send booking email notifications", error);
+    }
+
     revalidatePath("/booking");
-    revalidatePath("/bookings");
 
     return {
       status: "success",
-      message: "Booking request received. Your appointment is now pending workshop confirmation.",
+      message: emailNotificationSent
+        ? "Booking request received. The workshop has been notified by email and will confirm your appointment shortly."
+        : "Booking request received. The workshop will confirm your appointment shortly.",
       errors: {},
       booking: getBookingSummary(booking),
+      emailNotificationSent,
     };
   } catch (error) {
     console.error("Failed to create booking", error);
@@ -82,78 +96,7 @@ export async function createBookingAction(_previousState, formData) {
       message: "Something went wrong while saving the booking. Please try again.",
       errors: {},
       booking: null,
+      emailNotificationSent: false,
     };
   }
-}
-
-export async function updateBookingStatusAction(formData) {
-  const parsed = bookingStatusUpdateSchema.safeParse({
-    bookingId: formData.get("bookingId"),
-    status: formData.get("status"),
-  });
-
-  if (!parsed.success) {
-    return;
-  }
-
-  const booking = await db.booking.findUnique({
-    where: { id: parsed.data.bookingId },
-    select: {
-      id: true,
-      status: true,
-    },
-  });
-
-  if (!booking || isFinalBookingStatus(booking.status)) {
-    refresh();
-    return;
-  }
-
-  if (!canUpdateBookingStatus(booking.status, parsed.data.status)) {
-    refresh();
-    return;
-  }
-
-  await db.booking.update({
-    where: { id: booking.id },
-    data: { status: parsed.data.status },
-  });
-
-  revalidatePath("/bookings");
-  refresh();
-}
-
-export async function cancelBookingAction(formData) {
-  const parsed = z
-    .object({
-      bookingId: z.coerce.number().int().positive("Booking not found."),
-    })
-    .safeParse({
-      bookingId: formData.get("bookingId"),
-    });
-
-  if (!parsed.success) {
-    return;
-  }
-
-  const booking = await db.booking.findUnique({
-    where: { id: parsed.data.bookingId },
-    select: {
-      id: true,
-      status: true,
-    },
-  });
-
-  if (!booking || booking.status === "COMPLETED" || booking.status === "CANCELLED") {
-    refresh();
-    return;
-  }
-
-  await db.booking.update({
-    where: { id: booking.id },
-    data: { status: "CANCELLED" },
-  });
-
-  revalidatePath("/bookings");
-  refresh();
 }

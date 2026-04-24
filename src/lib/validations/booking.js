@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const phonePattern = /^[+0-9()\-.\s]{7,20}$/;
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+const timePattern = /^([01]\d|2[0-3]):[0-5]\d$/;
 
 export const bookingRequestSchema = z.object({
   serviceId: z.coerce.number().int().positive("Please choose a service."),
@@ -15,6 +16,9 @@ export const bookingRequestSchema = z.object({
 
       return !Number.isNaN(date.getTime()) && date >= today;
     }, "Please choose today or a future date."),
+  bookingTime: z
+    .string()
+    .regex(timePattern, "Please choose a valid booking time."),
   name: z
     .string()
     .trim()
@@ -26,8 +30,9 @@ export const bookingRequestSchema = z.object({
     .regex(phonePattern, "Enter a valid phone number."),
 });
 
-export function normalizeBookingDate(value) {
-  const [year, month, day] = value.split("-").map(Number);
+export function normalizeBookingDate(dateValue, timeValue) {
+  const [hours, minutes] = timeValue.split(":").map(Number);
+  const [year, month, day] = dateValue.split("-").map(Number);
 
-  return new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+  return new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
 }

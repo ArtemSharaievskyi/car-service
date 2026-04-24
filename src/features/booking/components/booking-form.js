@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState, useMemo, useState } from "react";
 import { createBookingAction } from "@/features/booking/actions";
 import { BookingServiceCard } from "@/features/booking/components/booking-service-card";
@@ -11,7 +10,10 @@ const initialBookingState = {
   message: "",
   errors: {},
   booking: null,
+  emailNotificationSent: false,
 };
+
+const timeOptions = ["07:30", "08:30", "09:30", "11:00", "12:30", "14:00", "16:30", "17:30"];
 
 function formatDateLabel(date) {
   return new Intl.DateTimeFormat("en-US", {
@@ -47,6 +49,7 @@ export function BookingForm({ services }) {
 
   const [selectedService, setSelectedService] = useState(services[0]?.id ?? "");
   const [selectedDate, setSelectedDate] = useState(dateOptions[1]?.value ?? dateOptions[0]?.value ?? "");
+  const [selectedTime, setSelectedTime] = useState(timeOptions[0] ?? "");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [state, formAction, pending] = useActionState(createBookingAction, initialBookingState);
@@ -56,6 +59,7 @@ export function BookingForm({ services }) {
   const activeDate = dateOptions.find((option) => option.value === selectedDate) ?? null;
   const serviceError = state.errors?.serviceId?.[0];
   const dateError = state.errors?.bookingDate?.[0];
+  const timeError = state.errors?.bookingTime?.[0];
   const nameError = state.errors?.name?.[0];
   const phoneError = state.errors?.phone?.[0];
 
@@ -75,6 +79,7 @@ export function BookingForm({ services }) {
       <form action={formAction} className="space-y-8">
         <input type="hidden" name="serviceId" value={selectedService} />
         <input type="hidden" name="bookingDate" value={selectedDate} />
+        <input type="hidden" name="bookingTime" value={selectedTime} />
 
         {state.message ? (
           <div
@@ -109,10 +114,14 @@ export function BookingForm({ services }) {
               </span>
             </div>
 
-            <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <div className="mt-5 grid gap-4 md:grid-cols-4">
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-white/40">Date</p>
                 <p className="mt-2 text-sm font-medium text-white">{state.booking.bookingDateLabel}</p>
+              </div>
+              <div>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/40">Time</p>
+                <p className="mt-2 text-sm font-medium text-white">{state.booking.bookingTimeLabel}</p>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-white/40">Customer</p>
@@ -122,18 +131,14 @@ export function BookingForm({ services }) {
               <div>
                 <p className="text-xs uppercase tracking-[0.18em] text-white/40">Next step</p>
                 <p className="mt-2 text-sm text-white/68">
-                  The workshop can confirm, start, complete, or cancel this booking from the bookings page.
+                  {state.emailNotificationSent
+                    ? "A booking notification email was sent to the workshop. The service team will confirm the appointment with you directly."
+                    : "Your request was saved and the service team will confirm the appointment with you directly."}
                 </p>
               </div>
             </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <Link
-                href="/bookings"
-                className="rounded-full border border-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:border-white/20 hover:bg-white/[0.05]"
-              >
-                View all bookings
-              </Link>
               <p className="text-sm text-white/45">The form stays available if you need to submit another request.</p>
             </div>
           </div>
@@ -161,6 +166,31 @@ export function BookingForm({ services }) {
             ))}
           </div>
           {serviceError ? <p className="text-sm text-red-300">{serviceError}</p> : null}
+        </section>
+
+        <section className="space-y-4">
+          <div>
+            <p className="text-sm uppercase tracking-[0.18em] text-[var(--color-accent-strong)]">
+              Preferred time
+            </p>
+            <h3 className="mt-3 text-2xl font-semibold text-white">Choose your preferred slot</h3>
+          </div>
+
+          <div className="max-w-sm space-y-2">
+            <select
+              value={selectedTime}
+              onChange={(event) => setSelectedTime(event.target.value)}
+              aria-invalid={Boolean(timeError)}
+              className="h-12 w-full rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 text-white outline-none transition focus:border-[var(--color-accent)] focus:bg-white/[0.05]"
+            >
+              {timeOptions.map((time) => (
+                <option key={time} value={time} className="bg-slate-950 text-white">
+                  {time}
+                </option>
+              ))}
+            </select>
+            {timeError ? <p className="text-sm text-red-300">{timeError}</p> : null}
+          </div>
         </section>
 
         <section className="space-y-4">
@@ -269,7 +299,7 @@ export function BookingForm({ services }) {
           <div className="border-b border-white/[0.08] pb-5">
             <p className="text-xs uppercase tracking-[0.18em] text-white/40">Preferred date</p>
             <p className="mt-3 text-lg font-semibold text-white">{activeDate?.label ?? "Pick a date"}</p>
-            <p className="mt-2 text-sm text-white/58">A service advisor will confirm the final appointment time.</p>
+            <p className="mt-2 text-sm text-white/58">Requested arrival time: {selectedTime || "Choose a time"}.</p>
           </div>
 
           <div className="border-b border-white/[0.08] pb-5">
