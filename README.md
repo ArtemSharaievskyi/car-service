@@ -47,7 +47,6 @@ Replace these placeholders with production screenshots before publishing the fin
 
 ```text
 .
-|-- docs/screenshots/       # Replaceable README screenshot placeholders
 |-- prisma/                 # Prisma schema, config, and seed data
 |-- public/images/          # Portfolio hero and parts catalog imagery
 |-- src/app/                # App Router pages, layout, and API route handlers
