@@ -1,5 +1,13 @@
 # DriveFix Auto Service
 
+![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=0b1220)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Stripe](https://img.shields.io/badge/Stripe-Checkout-635BFF?style=for-the-badge&logo=stripe&logoColor=white)
+![Resend](https://img.shields.io/badge/Resend-Email-000000?style=for-the-badge&logo=resend&logoColor=white)
+
 DriveFix Auto Service is a portfolio-ready workshop web app for booking vehicle service appointments, browsing maintenance parts, managing a parts cart, and starting a secure Stripe Checkout flow. The project is built as a modern full-stack Next.js application with a feature-oriented source structure, Prisma-backed booking data, server-side validation, and optional email notifications.
 
 ## Screenshots
