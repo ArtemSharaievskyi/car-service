@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useCart } from "@/features/cart/components/cart-provider";
 import { navigationItems } from "@/lib/navigation";
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/[0.08] bg-slate-950/85 backdrop-blur-xl">
@@ -38,7 +40,18 @@ export function SiteHeader() {
                     : "text-white/70 hover:bg-white/[0.06] hover:text-white"
                 }`}
               >
-                {item.label}
+                <span className="inline-flex items-center gap-2">
+                  <span>{item.label}</span>
+                  {item.href === "/cart" && totalItems > 0 ? (
+                    <span
+                      className={`inline-flex min-w-6 items-center justify-center rounded-full px-2 py-0.5 text-xs font-semibold ${
+                        active ? "bg-slate-950/12 text-slate-950" : "bg-[var(--color-accent-soft)] text-white"
+                      }`}
+                    >
+                      {totalItems}
+                    </span>
+                  ) : null}
+                </span>
               </Link>
             );
           })}

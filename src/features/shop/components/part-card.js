@@ -1,6 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import { useCart } from "@/features/cart/components/cart-provider";
 
 export function PartCard({ part }) {
+  const { addPart, items } = useCart();
+  const cartItem = items.find((item) => item.sku === part.sku);
+
   return (
     <article className="panel flex h-full flex-col overflow-hidden rounded-lg shadow-lg shadow-black/15">
       <div className="relative aspect-[4/3] border-b border-white/[0.08] bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))]">
@@ -46,9 +52,10 @@ export function PartCard({ part }) {
 
         <button
           type="button"
+          onClick={() => addPart(part)}
           className="mt-6 inline-flex min-h-11 items-center justify-center rounded-full bg-[var(--color-accent)] px-4 text-sm font-semibold text-slate-950 transition hover:bg-[var(--color-accent-strong)]"
         >
-          Add to cart
+          {cartItem ? `Add another (${cartItem.quantity} in cart)` : "Add to cart"}
         </button>
       </div>
     </article>
