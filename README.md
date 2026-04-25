@@ -3,7 +3,8 @@
 ### 📱 Responsive Design
 Fully responsive layout for mobile, tablet, and desktop.
 <p align="center">
-  <img src="ВАШ_СКРИН_MOBILE" width="70%" />
+  <img src="https://github.com/user-attachments/assets/4c5a3d8f-426e-43c9-9789-a1b7d6c785e5" width="95%" />
+
 </p>
 
 ### 🚗 Home Page
@@ -46,7 +47,31 @@ Add, remove items and view total price.
 </p>
 
 ---
+## ⚡ Integrations
 
+### 📧 Resend Email Notifications
+Professional transactional email system for handling bookings.
+
+- Sends booking requests directly to the business email  
+- Clean, modern HTML email layout  
+- Realistic workflow (no public bookings page)  
+
+<p align="center">
+ <img  src="https://github.com/user-attachments/assets/8a974114-e108-4098-9cba-687e889c2306" width="95%" />
+</p>
+
+---
+
+### 💳 Stripe Checkout
+Secure payment integration for the parts shop.
+
+- Stripe Checkout session for cart items  
+- Clean redirect-based payment flow  
+- Production-ready payment structure  
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/d111a959-3e38-4833-80f5-9db7d6cf4ca1" width="95%" />
+</p>
 
 
 
