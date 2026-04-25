@@ -62,17 +62,6 @@ Add, remove items and view total price.
 
 DriveFix Auto Service is a portfolio-ready workshop web app for booking vehicle service appointments, browsing maintenance parts, managing a parts cart, and starting a secure Stripe Checkout flow. The project is built as a modern full-stack Next.js application with a feature-oriented source structure, Prisma-backed booking data, server-side validation, and optional email notifications.
 
-## Screenshots
-
-Replace these placeholders with production screenshots before publishing the final portfolio entry.
-
-| Home | Booking |
-| --- | --- |
-| ![Home page screenshot placeholder](docs/screenshots/home.svg) | ![Booking page screenshot placeholder](docs/screenshots/booking.svg) |
-
-| Shop | Cart |
-| --- | --- |
-| ![Shop page screenshot placeholder](docs/screenshots/shop.svg) | ![Cart page screenshot placeholder](docs/screenshots/cart.svg) |
 
 ## Features
 
