@@ -1,3 +1,55 @@
+## 📸 Application Preview
+
+### 📱 Responsive Design
+Fully responsive layout for mobile, tablet, and desktop.
+<p align="center">
+  <img src="ВАШ_СКРИН_MOBILE" width="70%" />
+</p>
+
+### 🚗 Home Page
+<p align="center">
+  <img  src="https://github.com/user-attachments/assets/4fa69cc6-be51-48ae-8e7f-0ae271c6d7ac" width="95%" />
+</p>
+
+---
+
+### 🛠 Service Booking
+Book car maintenance services such as diagnostics, oil change, and inspection.
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/5f1ac85e-b0f8-4483-a0bc-c1ea71b04398" width="95%" />
+</p>
+
+---
+
+### 🛒 Parts Shop
+Browse automotive parts with filtering by brand and model.
+<p align="center">
+ <img  src="https://github.com/user-attachments/assets/9c770ff0-12f1-4a16-ab44-fad63aed7dfa"  width="95%" />
+
+</p>
+
+---
+
+### 🔎 Product Filtering
+Find parts by car brand and model for a realistic shopping experience.
+<p align="center">
+  <img  src="https://github.com/user-attachments/assets/0f732144-5ee6-4d14-9418-b74e3655ee4d" width="95%" />
+
+</p>
+
+---
+
+### 🧺 Shopping Cart
+Add, remove items and view total price.
+<p align="center">
+ <img  src="https://github.com/user-attachments/assets/313cfd5d-3e31-43f4-9065-3f471e7aca40" width="95%" />
+</p>
+
+---
+
+
+
+
 # DriveFix Auto Service
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
