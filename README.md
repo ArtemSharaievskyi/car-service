@@ -22,6 +22,16 @@ Book car maintenance services such as diagnostics, oil change, and inspection.
 
 ---
 
+### ✅ Booking Confirmation
+
+After submitting a service request, the user is redirected to a confirmation page.
+
+<p align="center">
+  <img  src="https://github.com/user-attachments/assets/04a20aca-41e3-461a-a01b-0e0e2ba621d5" width="95%" />
+</p>
+
+---
+
 ### 🛒 Parts Shop
 Browse automotive parts with filtering by brand and model.
 <p align="center">
@@ -35,7 +45,6 @@ Browse automotive parts with filtering by brand and model.
 Find parts by car brand and model for a realistic shopping experience.
 <p align="center">
   <img  src="https://github.com/user-attachments/assets/0f732144-5ee6-4d14-9418-b74e3655ee4d" width="95%" />
-
 </p>
 
 ---
@@ -49,8 +58,8 @@ Add, remove items and view total price.
 ---
 ## ⚡ Integrations
 
-### 📧 Resend Email Notifications
-Professional transactional email system for handling bookings.
+### 📧 Email Notifications - Resend
+Professional email confirmation system after booking
 
 - Sends booking requests directly to the business email  
 - Clean, modern HTML email layout  
@@ -73,7 +82,7 @@ Secure payment integration for the parts shop.
   <img src="https://github.com/user-attachments/assets/d111a959-3e38-4833-80f5-9db7d6cf4ca1" width="95%" />
 </p>
 
-
+---
 
 # DriveFix Auto Service
 
