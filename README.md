@@ -7,6 +7,8 @@ Fully responsive layout for mobile, tablet, and desktop.
 
 </p>
 
+---
+
 ### 🚗 Home Page
 <p align="center">
   <img  src="https://github.com/user-attachments/assets/4fa69cc6-be51-48ae-8e7f-0ae271c6d7ac" width="95%" />
